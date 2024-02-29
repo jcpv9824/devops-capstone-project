@@ -12,6 +12,7 @@ from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
+import random
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -108,21 +109,6 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["phone_number"], account.phone_number)
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
 
-    def test_bad_request(self):
-        """It should not Create an Account when sending the wrong data"""
-        response = self.client.post(BASE_URL, json={"name": "not enough data"})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_unsupported_media_type(self):
-        """It should not Create an Account when sending the wrong media type"""
-        account = AccountFactory()
-        response = self.client.post(
-            BASE_URL,
-            json=account.serialize(),
-            content_type="test/html"
-        )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-
     def read_an_account(self):
         """
         it should read an account from the service using ID
@@ -144,3 +130,35 @@ class TestAccountService(TestCase):
         """
         it should list all the accounts in the service
         """
+
+        #First create a random number of accounts
+        count = random.randint(1, 100)
+        accounts_created = _create_accounts(count)
+
+        #Second we count the number of accounts created with respect to the number in the db
+        accounts_db = Account.all()
+        self.assertEqual(count, len(accounts_db))
+
+        #All the accounts as a list
+        self.assertEqual(type(accounts_db), "list")
+
+    def test_bad_request(self):
+        """It should not Create an Account when sending the wrong data"""
+        response = self.client.post(BASE_URL, json={"name": "not enough data"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unsupported_media_type(self):
+        """It should not Create an Account when sending the wrong media type"""
+        account = AccountFactory()
+        response = self.client.post(
+            BASE_URL,
+            json=account.serialize(),
+            content_type="test/html"
+        )
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+
+
+
+
+        
