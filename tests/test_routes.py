@@ -109,38 +109,39 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["phone_number"], account.phone_number)
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
 
-    def read_an_account(self):
+    def test_read_an_account(self):
         """
         it should read an account from the service using ID
         """
     
-    def update_an_account(self):
+    def test_update_an_account(self):
         """
         it should update an account from the service
         using ID, and requires all data to be updated
         """
 
-    def delete_an_account(self):
+    def test_delete_an_account(self):
         """
         it should delete an account from the service
         using ID
         """
     
-    def list_all_accounts(self):
+    def test_list_all_accounts(self):
         """
         it should list all the accounts in the service
         """
+        #Testing with accounts
+        response = self.client.get(BASE_URL)
+        self.assertEqual(len(response.get_json()), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        #First create a random number of accounts
+        #create a random number of accounts
         count = random.randint(1, 100)
-        accounts_created = _create_accounts(count)
-
-        #Second we count the number of accounts created with respect to the number in the db
-        accounts_db = Account.all()
-        self.assertEqual(count, len(accounts_db))
-
-        #All the accounts as a list
-        self.assertEqual(type(accounts_db), "list")
+        accounts_created = self._create_accounts(count)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(len(response.get_json()), count)
+        self.assertEqual(type(response.get_json()), list)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_bad_request(self):
         """It should not Create an Account when sending the wrong data"""
