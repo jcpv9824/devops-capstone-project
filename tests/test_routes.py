@@ -7,6 +7,8 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import sys
+from io import StringIO
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -114,6 +116,22 @@ class TestAccountService(TestCase):
         it should read an account from the service using ID
         """
     
+        # Create a random id from a random list
+        count = random.randint(5, 100)
+        accounts_created = self._create_accounts(count)
+        IDs = []
+        for account in accounts_created:
+            IDs.append(account.id)
+        accound_id = IDs[4]
+
+        #requesting account
+        response = self.client.get(f"{BASE_URL}/{accound_id}")
+        payload = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(payload["id"], accound_id)
+        
+
+
     def test_update_an_account(self):
         """
         it should update an account from the service
@@ -130,7 +148,7 @@ class TestAccountService(TestCase):
         """
         it should list all the accounts in the service
         """
-        #Testing with accounts
+        #Testing with no accounts
         response = self.client.get(BASE_URL)
         self.assertEqual(len(response.get_json()), 0)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
