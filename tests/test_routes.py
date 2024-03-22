@@ -174,6 +174,27 @@ class TestAccountService(TestCase):
         using ID
         """
         #Delete  | DELETE | 204 NO CONTENT | ""                          | DELETE /accounts/{id}
+        # Create a single account
+        count = random.randint(5, 100)
+        accounts_created = self._create_accounts(count)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(len(response.get_json()), count)
+        account = accounts_created[4]
+        account_id = account.id 
+
+        #Delete account
+        response = self.client.delete(
+            f"{BASE_URL}/{account_id}"
+            )
+
+        #testing response
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        #testing deletion
+        response = self.client.get(BASE_URL)
+        self.assertEqual(len(response.get_json()), count - 1)
+
+
     
     def test_list_all_accounts(self):
         """

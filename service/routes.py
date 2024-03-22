@@ -123,8 +123,6 @@ def update_account(id):
 
 
 
-
-
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
@@ -132,9 +130,18 @@ def update_account(id):
 @app.route("/accounts/<int:id>", methods=["DELETE"])
 def delete_account(id):
     """
-    Delete an account using its ID
-    Delete  | DELETE | 204 NO CONTENT | ""                          | DELETE /accounts/{id}
+    Delete an account using its ID. If the account does not exist, do nothing.
+    Always return HTTP 204 NO CONTENT.
     """
+    app.logger.info(f"Attempting to delete account with id: {id}")
+    account = Account.find(id)
+    if account:
+        app.logger.info(f"Account with id {id} found and will be deleted.")
+        account.delete()
+    
+    return make_response('', status.HTTP_204_NO_CONTENT)
+    
+
 
 
 ######################################################################
