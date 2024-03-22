@@ -134,6 +134,18 @@ class TestAccountService(TestCase):
         self.assertEqual(payload["address"], account_created.address)
         self.assertEqual(payload["phone_number"], account_created.phone_number)
 
+    def test_read_an_account_that_doesnt_exist(self):
+        """
+        It should try to read an account that doesn't exist
+        """
+        # Making a GET request to fetch the account
+        response = self.client.get(f"{BASE_URL}/123456789")
+        payload = response.get_json()
+
+        # Asserting the HTTP status and response content
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(payload["message"], "Account wasnt found")
+
     def test_update_an_account(self):
         """
         it should update an account from the service
@@ -165,7 +177,18 @@ class TestAccountService(TestCase):
         self.assertEqual(payload["name"], "New_name")
         self.assertEqual(payload["email"], "New_email")
 
+    def test_update_an_account_that_doesnt_exist(self):
+        """
+        It should try to update an account that doesn't exist
+        """
+        account = AccountFactory()
+        # Making a GET request to fetch the account
+        response = self.client.put(f"{BASE_URL}/123456789")
+        payload = response.get_json()
 
+        # Asserting the HTTP status and response content
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(payload["message"], "Account wasnt found")
 
 
     def test_delete_an_account(self):

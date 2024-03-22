@@ -87,7 +87,7 @@ def read_account(id):
     if  account is None:
         app.logger.info("Returning result for an empty account")
         return make_response(
-        jsonify({"error":"Account wasnt found"}), status.HTTP_404_NOT_FOUND #Return a dictionary
+        jsonify({"message":"Account wasnt found"}), status.HTTP_404_NOT_FOUND #Return a dictionary
     )
     else:
         app.logger.info("Serializing account")    
@@ -109,7 +109,7 @@ def update_account(id):
     if account is None:
         app.logger.info("Account with id %s not found.", id)
         return make_response(
-            jsonify({"error": "Account not found"}), status.HTTP_404_NOT_FOUND
+            jsonify({"message": "Account wasnt found"}), status.HTTP_404_NOT_FOUND
         )
     
     app.logger.info("Updating account with the new data")
