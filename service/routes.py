@@ -47,9 +47,9 @@ def create_accounts():
     app.logger.info("Request to create an Account")
     check_content_type("application/json")
     account = Account()
-    account.deserialize(request.get_json()) #Turn the dictionary into a class instance again.
+    account.deserialize(request.get_json())  #Turn the dictionary into a class instance again.
     account.create()
-    message = account.serialize() 
+    message = account.serialize()
     # Uncomment once get_accounts has been implemented
     # location_url = url_for("get_accounts", account_id=account.id, _external=True)
     location_url = "/"  # Remove once get_accounts has been implemented
@@ -69,49 +69,48 @@ def list_all_accounts():
     if len(accounts) == 0:
         app.logger.info("Answering when there are no accounts")
         return make_response(jsonify([]), status.HTTP_200_OK)
-    else:
-        app.logger.info("Answering when there are accounts")
-        accounts_list = [account.serialize() for account in accounts]        
-        return jsonify(accounts_list), status.HTTP_200_OK
+    app.logger.info("Answering when there are accounts")
+    accounts_list = [account.serialize() for account in accounts]
+    return jsonify(accounts_list), status.HTTP_200_OK
 
 
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
 
-@app.route("/accounts/<int:id>", methods=["GET"])
-def read_account(id):
-    """Return an account using its ID"""
-    app.logger.info(f"Requesting accoung using id: {id}")
-    account = Account.find(id) #Account instance.
+@app.route("/accounts/<int:account_id>", methods=["GET"])
+def read_account(account_id):
+    """Return an account using its id"""
+    app.logger.info(f"Requesting accoung using id: {account_id}")
+    account = Account.find(account_id) #Account instance.
     if  account is None:
         app.logger.info("Returning result for an empty account")
         return make_response(
-        jsonify({"message":"Account wasnt found"}), status.HTTP_404_NOT_FOUND #Return a dictionary
+        jsonify({"message":"Account wasnt found"}), status.HTTP_404_NOT_FOUND  #Return a dictionary
     )
-    else:
-        app.logger.info("Serializing account")    
-        return make_response(
-            jsonify(account.serialize()), status.HTTP_200_OK #Return a dictionary
-        )
+
+    app.logger.info("Serializing account")
+    return make_response(
+        jsonify(account.serialize()), status.HTTP_200_OK  #Return a dictionary
+    )
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 
-@app.route("/accounts/<int:id>", methods=["PUT"])
-def update_account(id):
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_account(account_id):
     """
     Update an account using its ID
     """
-    app.logger.info(f"Updating account using id: {id}")
-    account = Account.find(id)
+    app.logger.info(f"Updating account using id: {account_id}")
+    account = Account.find(account_id)
     if account is None:
-        app.logger.info("Account with id %s not found.", id)
+        app.logger.info("Account with id %s not found.", account_id)
         return make_response(
             jsonify({"message": "Account wasnt found"}), status.HTTP_404_NOT_FOUND
         )
-    
+
     app.logger.info("Updating account with the new data")
     check_content_type("application/json")
     account.deserialize(request.get_json())
@@ -127,20 +126,20 @@ def update_account(id):
 # DELETE AN ACCOUNT
 ######################################################################
 
-@app.route("/accounts/<int:id>", methods=["DELETE"])
-def delete_account(id):
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_account(account_id):
     """
     Delete an account using its ID. If the account does not exist, do nothing.
     Always return HTTP 204 NO CONTENT.
     """
-    app.logger.info(f"Attempting to delete account with id: {id}")
-    account = Account.find(id)
+    app.logger.info(f"Attempting to delete account with id: {account_id}")
+    account = Account.find(account_id)
     if account:
-        app.logger.info(f"Account with id {id} found and will be deleted.")
+        app.logger.info(f"Account with id {account_id} found and will be deleted.")
         account.delete()
-    
+
     return make_response('', status.HTTP_204_NO_CONTENT)
-    
+
 
 
 
