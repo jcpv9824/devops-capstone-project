@@ -14,6 +14,8 @@ jobs:
     container: python:3.9-slim 
     #Must have the same version than the python used during the development
     steps:
+      # "checkout" refers to the process of copying the repository's 
+      # code into the runner's filesystem
       - name: Checkout
         uses: actions/checkout@v3
 
