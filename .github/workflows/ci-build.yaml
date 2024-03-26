@@ -1,10 +1,13 @@
 name: CI workflow
 
-on: #Define the event triggers
+on:
   push:
-    branches: [ "main" ] #Event 1: When someone pushes to the main branch
+    branches: 
+      - main
+      - add-ci-build  # Added "add-ci-build" to trigger the workflow on pushes to this branch
   pull_request:
-    branches: [ "main" ] #Event 2: When someone makes a pull request
+    branches: 
+      - main  # Triggers the workflow on pull requests to the main branch
 
 jobs:
   build: 
@@ -26,7 +29,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
 
     steps:
       - name: Checkout
