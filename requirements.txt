@@ -28,6 +28,8 @@ coverage==6.3.2
 # Utilities
 httpie==3.2.1
 
-# Security server
+# Security server to https
 Flask-Talisman
 
+# CORS Policies
+Flask-Cors
