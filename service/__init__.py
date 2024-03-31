@@ -18,7 +18,7 @@ app.config.from_object(config)
 # Applying security measure using flask-talisman
 talisman = Talisman(app)
 
-#Applying CORS policies using flask-cors
+# Applying CORS policies using flask-cors
 CORS(app)
 
 # Import the routes After the Flask app is created
@@ -32,7 +32,9 @@ from service.common import error_handlers, cli_commands  # noqa: F401 E402
 log_handlers.init_logging(app, "gunicorn.error")
 
 app.logger.info(70 * "*")
-app.logger.info("  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*"))
+app.logger.info(
+    "  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*")
+    )
 app.logger.info(70 * "*")
 
 try:
