@@ -29,7 +29,7 @@ coverage==6.3.2
 httpie==3.2.1
 
 # Security server to https
-Flask-Talisman
+flask-talisman==<version_number>
 
 # CORS Policies
-Flask-Cors
+Flask-CORS==<version_number>
