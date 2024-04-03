@@ -49,4 +49,21 @@ spec:
           # Delete files and directories starting with .. plus any other character
           rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
         fi
-
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-clone
+spec:
+  params:
+    - name: repo-url
+      description: brings the url of the repo as a variable in the input
+      type: string
+    - name: branch
+      description: The branch to clone
+      type: string
+  steps:
+    - name: checkout
+      image: bitnami/git:latest
+      command: [git]
+      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
