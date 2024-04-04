@@ -66,3 +66,9 @@ spec:
         value: "-v --with-spec --spec-color"
       runAfter:
         - clone
+
+        value: "sqlite:///test.db"
+      - name: args
+        value: "-v --with-spec --spec-color"
+      runAfter:
+        - clone
