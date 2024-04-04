@@ -17,6 +17,9 @@ spec:
     - name: branch
       type: string
       default: main
+    - name: revision  # Define revision parameter at the pipeline level
+      type: string
+      default: main  # Set default value here
   tasks:
     - name: init
       taskRef:
@@ -34,7 +37,7 @@ spec:
         - name: url
           value: $(params.repo-url)
         - name: revision
-          value: $(params.branch)
+          value: $(params.revision)  # Pass the revision parameter to git-clone task
       runAfter:
         - init
     - name: lint
