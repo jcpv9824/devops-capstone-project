@@ -7,8 +7,6 @@ Test cases can be run with the following:
 """
 import os
 import logging
-import sys
-from io import StringIO
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -61,11 +59,11 @@ class TestAccountService(TestCase):
     #  H E L P E R   M E T H O D S
     ######################################################################
 
-    def _create_accounts(self, count):#Return a list of instances accounts
+    def _create_accounts(self, count):  # Return a list of instances accounts
         """Factory method to create accounts in bulk"""
-        accounts = [] 
+        accounts = []
         for _ in range(count):
-            account = AccountFactory() 
+            account = AccountFactory()
             response = self.client.post(BASE_URL, json=account.serialize())
             self.assertEqual(
                 response.status_code,
@@ -73,7 +71,7 @@ class TestAccountService(TestCase):
                 "Could not create test Account",
             )
             new_account = response.get_json()
-            account.id = new_account["id"] #The id provided is the same than the id in the database
+            account.id = new_account["id"]  # The id provided is the same than the id in the database
             accounts.append(account)
         return accounts
 
@@ -155,28 +153,24 @@ class TestAccountService(TestCase):
         it should update an account from the service
         using ID, and requires all data to be updated
         """
-        #Update  | PUT    | 200 OK         | An account as json {...}    | PUT /accounts/{id}
 
         # Create a single account
-        account= self._create_accounts(1)[0]
-        account_id = account.id 
+        account = self._create_accounts(1)[0]
+        account_id = account.id
 
-        #New attributes
-        original_name = account.name
+        # New attributes
         account.name = "New_name"
-        original_email = account.email
         account.email = "New_email"
-         
 
-        #Update
+        # Update
         response = self.client.put(
             f"{BASE_URL}/{account_id}",
             json=account.serialize(),
             content_type="application/json"
             )
         payload = response.get_json()
-        
-        #tests
+
+        # tests
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(payload["name"], "New_name")
         self.assertEqual(payload["email"], "New_email")
@@ -185,7 +179,6 @@ class TestAccountService(TestCase):
         """
         It should try to update an account that doesn't exist
         """
-        account = AccountFactory()
         # Making a GET request to fetch the account
         response = self.client.put(f"{BASE_URL}/123456789")
         payload = response.get_json()
@@ -194,47 +187,43 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(payload["message"], "Account wasnt found")
 
-
     def test_delete_an_account(self):
         """
         it should delete an account from the service
         using ID
         """
-        #Delete  | DELETE | 204 NO CONTENT | ""                          | DELETE /accounts/{id}
         # Create a single account
         count = random.randint(5, 100)
         accounts_created = self._create_accounts(count)
         response = self.client.get(BASE_URL)
         self.assertEqual(len(response.get_json()), count)
         account = accounts_created[4]
-        account_id = account.id 
+        account_id = account.id
 
-        #Delete account
+        # Delete account
         response = self.client.delete(
             f"{BASE_URL}/{account_id}"
             )
 
-        #testing response
+        # testing response
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        #testing deletion
+        # testing deletion
         response = self.client.get(BASE_URL)
         self.assertEqual(len(response.get_json()), count - 1)
 
-
-    
     def test_list_all_accounts(self):
         """
         it should list all the accounts in the service
         """
-        #Testing with no accounts
+        # Testing with no accounts
         response = self.client.get(BASE_URL)
         self.assertEqual(len(response.get_json()), 0)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        #create a random number of accounts
+        # create a random number of accounts
         count = random.randint(1, 100)
-        accounts_created = self._create_accounts(count)
+        accounts_created = self._create_accounts(count)  # noqa: F841
         response = self.client.get(BASE_URL)
         self.assertEqual(len(response.get_json()), count)
         self.assertEqual(type(response.get_json()), list)
@@ -277,6 +266,3 @@ class TestAccountService(TestCase):
         response = self.client.get(BASE_URL, environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get("Access-Control-Allow-Origin"), "*")
-
-
-        
