@@ -15,7 +15,7 @@ spec:
     - name: repo-url
       type: string
       value: https://github.com/jcpv9824/devops-capstone-project.git
-    - name: revision
+    - name: branch
       type: string
       default: main
   tasks:
@@ -35,7 +35,7 @@ spec:
         - name: url
           value: $(params.repo-url)
         - name: revision
-          value: $(params.revision)  # Pass the revision parameter to git-clone task
+          value: $(params.branch)  # Pass the revision parameter to git-clone task
       runAfter:
         - init
     - name: lint
