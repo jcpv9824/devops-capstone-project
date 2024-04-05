@@ -53,20 +53,20 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: git-clone
+  name: checkout
 spec:
   params:
-    - name: repo-url
+    - name: url
       description: brings the url of the repo as a variable in the input
       type: string
-    - name: branch
+    - name: revision
       description: The branch to clone
       type: string
   steps:
     - name: checkout
       image: bitnami/git:latest
       command: [git]
-      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
+      args: ["clone", "--branch", "$(params.revision)", "$(params.url)"]
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
