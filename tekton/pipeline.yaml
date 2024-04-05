@@ -59,7 +59,7 @@ spec:
           value: "-v --with-spec --spec-color"
       runAfter:
         - clone
-        - name: build
+    - name: build
       workspaces:
         - name: source
           workspace: pipeline-workspace
@@ -67,8 +67,8 @@ spec:
         name: buildah
         kind: ClusterTask
       params:
-        - name: IMAGE
-          value: ""$(params.build-image)""
+      - name: IMAGE
+        value: "$(params.build-image)"
       runAfter:
         - tests
         - lint
